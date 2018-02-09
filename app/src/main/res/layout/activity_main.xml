@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="cn.hikyson.godeyedemo.MainActivity">
+
+    <TextView
+        android:id="@+id/address_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
+
+    <EditText
+        android:id="@+id/block_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="block time millis"/>
+
+    <Button
+        android:id="@+id/block_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="block"
+        android:text="block"/>
+
+    <Button
+        android:id="@+id/request_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="request"
+        android:text="request"/>
+
+
+    <Button
+        android:id="@+id/leak_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:onClick="jumpToLeak"
+        android:text="jumpToLeak"/>
+</LinearLayout>
