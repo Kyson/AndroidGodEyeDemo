@@ -4,10 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.v4.util.ArrayMap;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,25 +15,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import cn.hikyson.android.godeye.toolbox.StartupTracer;
 import cn.hikyson.godeye.core.GodEye;
-import cn.hikyson.godeye.core.internal.modules.cpu.Cpu;
 import cn.hikyson.godeye.core.internal.modules.network.Network;
 import cn.hikyson.godeye.core.internal.modules.network.RequestBaseInfo;
 import cn.hikyson.godeye.monitor.GodEyeMonitor;
 
 public class MainActivity extends Activity {
 
+    private static final int PORT = 5390;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GodEyeMonitor.work(this);
-        ((TextView) this.findViewById(R.id.address_tv)).setText(getAddressLog(this, 5390));
+        ((TextView) this.findViewById(R.id.address_tv)).setText(getAddressLog(this, PORT));
     }
 
     @Override
@@ -93,6 +91,10 @@ public class MainActivity extends Activity {
     }
 
     private static String getAddressLog(Context context, int port) {
+        return "Open AndroidGodEye dashboard [ " + getFormatIpAddress(context, port) + " ] in your browser , if can not open it , make sure device and pc are on the same network segment";
+    }
+
+    private static String getFormatIpAddress(Context context, int port) {
         @SuppressLint("WifiManagerPotentialLeak")
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int ipAddress = wifiManager != null ? wifiManager.getConnectionInfo().getIpAddress() : 0;
@@ -101,6 +103,12 @@ public class MainActivity extends Activity {
                 (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff),
                 (ipAddress >> 24 & 0xff));
-        return "Open AndroidGodEye dashboard [ http://" + formattedIpAddress + ":" + port + " ] in your browser , if can not open it , make sure device and pc are on the same network segment";
+        return "http://" + formattedIpAddress + ":" + port;
+    }
+
+    public void viewHere(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(getFormatIpAddress(this, PORT)));
+        startActivity(intent);
     }
 }
