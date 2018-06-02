@@ -24,9 +24,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'cn.hikyson.godeye:godeye-core:1.7.4'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    debugImplementation 'cn.hikyson.godeye:godeye-monitor:1.7.4'
-    releaseImplementation 'cn.hikyson.godeye:godeye-monitor-no-op:1.7.4'
-    implementation 'cn.hikyson.godeye:godeye-toolbox:1.7.4'
+    implementation 'cn.hikyson.godeye:godeye-core:2.0.2'
+    debugImplementation 'cn.hikyson.godeye:godeye-monitor:2.0.2'
+    releaseImplementation 'cn.hikyson.godeye:godeye-monitor-no-op:2.0.2'
+    implementation 'cn.hikyson.godeye:godeye-toolbox:2.0.2'
 }

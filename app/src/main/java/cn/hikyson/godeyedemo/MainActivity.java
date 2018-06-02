@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,9 +19,12 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import cn.hikyson.android.godeye.toolbox.StartupTracer;
 import cn.hikyson.godeye.core.GodEye;
 import cn.hikyson.godeye.core.internal.modules.network.Network;
 import cn.hikyson.godeye.core.internal.modules.network.RequestBaseInfo;
+import cn.hikyson.godeye.core.internal.modules.startup.Startup;
+import cn.hikyson.godeye.core.internal.modules.startup.StartupInfo;
 import cn.hikyson.godeye.monitor.GodEyeMonitor;
 
 public class MainActivity extends Activity {
@@ -29,10 +33,26 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final long homeCreateTime = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GodEyeMonitor.work(this);
         ((TextView) this.findViewById(R.id.address_tv)).setText(getAddressLog(this, PORT));
+
+        getWindow().getDecorView().post(new Runnable() {
+            @Override
+            public void run() {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Startup startup = GodEye.instance().getModule(Startup.class);
+                        startup.produce(new StartupInfo(MyApp.sApplicationStartTime > 0 ?
+                                StartupInfo.StartUpType.COLD : StartupInfo.StartUpType.HOT, MyApp.sApplicationStartTime > 0 ? (System.currentTimeMillis() - MyApp.sApplicationStartTime) : (System.currentTimeMillis() - homeCreateTime)));
+                        MyApp.sApplicationStartTime = 0;
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -103,12 +123,12 @@ public class MainActivity extends Activity {
                 (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff),
                 (ipAddress >> 24 & 0xff));
-        return "http://" + formattedIpAddress + ":" + port;
+        return "http://" + formattedIpAddress + ":" + port + "/index.html";
     }
 
     public void viewHere(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(getFormatIpAddress(this, PORT)));
+        intent.setData(Uri.parse("localhost:5390/index.html"));
         startActivity(intent);
     }
 }
