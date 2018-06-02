@@ -6,8 +6,8 @@ android {
         applicationId "cn.hikyson.godeyedemo"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 4
-        versionName "3.1"
+        versionCode 5
+        versionName "4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -26,7 +26,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'cn.hikyson.godeye:godeye-core:2.0.2'
-    debugImplementation 'cn.hikyson.godeye:godeye-monitor:2.0.2'
-    releaseImplementation 'cn.hikyson.godeye:godeye-monitor-no-op:2.0.2'
+//    debugImplementation 'cn.hikyson.godeye:godeye-monitor:2.0.2'
+//    releaseImplementation 'cn.hikyson.godeye:godeye-monitor-no-op:2.0.2'
     implementation 'cn.hikyson.godeye:godeye-toolbox:2.0.2'
+    implementation 'cn.hikyson.godeye:godeye-monitor:2.0.2'
 }

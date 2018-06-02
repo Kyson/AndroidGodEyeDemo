@@ -58,3 +58,4 @@ freeline_project_description.json
 .idea/runConfigurations.xml
 .idea/caches/build_file_checksums.ser
 .idea/codeStyles/Project.xml
+app/release
