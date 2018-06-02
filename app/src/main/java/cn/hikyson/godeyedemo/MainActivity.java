@@ -128,7 +128,7 @@ public class MainActivity extends Activity {
 
     public void viewHere(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("localhost:5390/index.html"));
+        intent.setData(Uri.parse("http://localhost:5390/index.html"));
         startActivity(intent);
     }
 }
