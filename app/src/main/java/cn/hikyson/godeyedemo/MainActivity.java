@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Startup startup = GodEye.instance().getModule(Startup.class);
+                        Startup startup = GodEye.instance().getModule(GodEye.ModuleName.STARTUP);
                         startup.produce(new StartupInfo(MyApp.sApplicationStartTime > 0 ?
                                 StartupInfo.StartUpType.COLD : StartupInfo.StartUpType.HOT, MyApp.sApplicationStartTime > 0 ? (System.currentTimeMillis() - MyApp.sApplicationStartTime) : (System.currentTimeMillis() - homeCreateTime)));
                         MyApp.sApplicationStartTime = 0;
@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
                         }
                         String result = baos.toString("utf-8");
                         long endTimeMillis = System.currentTimeMillis();
-                        GodEye.instance().getModule(Network.class).produce(new RequestBaseInfo(startTimeMillis, endTimeMillis, result.getBytes().length, String.valueOf(url)));
+                        GodEye.instance().<Network>getModule(GodEye.ModuleName.NETWORK).produce(new RequestBaseInfo(startTimeMillis, endTimeMillis, result.getBytes().length, String.valueOf(url)));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

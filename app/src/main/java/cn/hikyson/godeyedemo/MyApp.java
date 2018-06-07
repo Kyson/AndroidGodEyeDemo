@@ -1,48 +1,29 @@
 package cn.hikyson.godeyedemo;
 
-import android.app.Activity;
+
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
 
 import java.util.Map;
 
-import cn.hikyson.android.godeye.toolbox.StartupTracer;
 import cn.hikyson.android.godeye.toolbox.crash.CrashFileProvider;
 import cn.hikyson.android.godeye.toolbox.rxpermission.RxPermissionRequest;
-import cn.hikyson.android.godeye.toolbox.rxpermission.RxPermissions;
 import cn.hikyson.godeye.core.GodEye;
-import cn.hikyson.godeye.core.helper.PermissionRequest;
-import cn.hikyson.godeye.core.internal.modules.battery.Battery;
-import cn.hikyson.godeye.core.internal.modules.battery.BatteryContextImpl;
-import cn.hikyson.godeye.core.internal.modules.cpu.Cpu;
-import cn.hikyson.godeye.core.internal.modules.cpu.CpuContextImpl;
-import cn.hikyson.godeye.core.internal.modules.crash.Crash;
-import cn.hikyson.godeye.core.internal.modules.fps.Fps;
-import cn.hikyson.godeye.core.internal.modules.fps.FpsContextImpl;
-import cn.hikyson.godeye.core.internal.modules.leakdetector.LeakContextImpl2;
-import cn.hikyson.godeye.core.internal.modules.leakdetector.LeakDetector;
-import cn.hikyson.godeye.core.internal.modules.leakdetector.canary.android.LeakCanary;
-import cn.hikyson.godeye.core.internal.modules.memory.Heap;
-import cn.hikyson.godeye.core.internal.modules.memory.Pss;
-import cn.hikyson.godeye.core.internal.modules.memory.PssContextImpl;
-import cn.hikyson.godeye.core.internal.modules.memory.Ram;
-import cn.hikyson.godeye.core.internal.modules.memory.RamContextImpl;
-import cn.hikyson.godeye.core.internal.modules.pageload.Pageload;
-import cn.hikyson.godeye.core.internal.modules.pageload.PageloadContextImpl;
-import cn.hikyson.godeye.core.internal.modules.sm.Sm;
-import cn.hikyson.godeye.core.internal.modules.sm.SmContextImpl;
-import cn.hikyson.godeye.core.internal.modules.thread.ThreadContextImpl;
-import cn.hikyson.godeye.core.internal.modules.thread.ThreadDump;
-import cn.hikyson.godeye.core.internal.modules.thread.deadlock.DeadLock;
-import cn.hikyson.godeye.core.internal.modules.thread.deadlock.DeadLockContextImpl;
-import cn.hikyson.godeye.core.internal.modules.thread.deadlock.DeadlockDefaultThreadFilter;
-import cn.hikyson.godeye.core.internal.modules.traffic.Traffic;
-import cn.hikyson.godeye.core.internal.modules.traffic.TrafficContextImpl;
+import cn.hikyson.godeye.core.installconfig.BatteryConfig;
+import cn.hikyson.godeye.core.installconfig.CpuConfig;
+import cn.hikyson.godeye.core.installconfig.CrashConfig;
+import cn.hikyson.godeye.core.installconfig.FpsConfig;
+import cn.hikyson.godeye.core.installconfig.HeapConfig;
+import cn.hikyson.godeye.core.installconfig.LeakConfig;
+import cn.hikyson.godeye.core.installconfig.PageloadConfig;
+import cn.hikyson.godeye.core.installconfig.PssConfig;
+import cn.hikyson.godeye.core.installconfig.RamConfig;
+import cn.hikyson.godeye.core.installconfig.SmConfig;
+import cn.hikyson.godeye.core.installconfig.ThreadConfig;
+import cn.hikyson.godeye.core.installconfig.TrafficConfig;
 import cn.hikyson.godeye.monitor.GodEyeMonitor;
-import io.reactivex.Observable;
 
 /**
  * Created by kysonchao on 2018/1/29.
@@ -71,19 +52,19 @@ public class MyApp extends Application {
                     return appInfo;
                 }
             });
-            GodEye.instance().install(Cpu.class, new CpuContextImpl())
-                    .install(Battery.class, new BatteryContextImpl(this))
-                    .install(Fps.class, new FpsContextImpl(this))
-                    .install(Heap.class, Long.valueOf(2000))
-                    .install(Pss.class, new PssContextImpl(this))
-                    .install(Ram.class, new RamContextImpl(this))
-                    .install(Sm.class, new SmContextImpl(this, 1000, 300, 800))
-                    .install(Traffic.class, new TrafficContextImpl())
-                    .install(Crash.class, new CrashFileProvider(this))
-                    .install(ThreadDump.class, new ThreadContextImpl())
-                    .install(DeadLock.class, new DeadLockContextImpl(GodEye.instance().getModule(ThreadDump.class).subject(), new DeadlockDefaultThreadFilter()))
-                    .install(Pageload.class, new PageloadContextImpl(this))
-                    .install(LeakDetector.class, new LeakContextImpl2(this, new RxPermissionRequest()));
+            GodEye.instance()
+                    .install(new BatteryConfig(this))
+                    .install(new CpuConfig())
+                    .install(new CrashConfig(new CrashFileProvider(this)))
+                    .install(new FpsConfig(this))
+                    .install(new HeapConfig())
+                    .install(new LeakConfig(this, new RxPermissionRequest()))
+                    .install(new PageloadConfig(this))
+                    .install(new PssConfig(this))
+                    .install(new RamConfig(this))
+                    .install(new SmConfig(this))
+                    .install(new ThreadConfig())
+                    .install(new TrafficConfig());
             sApplicationStartTime = System.currentTimeMillis();
         }
     }
