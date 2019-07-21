@@ -8,28 +8,29 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
 
-import cn.hikyson.android.godeye.toolbox.StartupTracer;
+import cn.hikyson.android.godeye.toolbox.network.OkNetworkCollectorFactory;
 import cn.hikyson.godeye.core.GodEye;
 import cn.hikyson.godeye.core.internal.modules.network.Network;
-import cn.hikyson.godeye.core.internal.modules.network.RequestBaseInfo;
 import cn.hikyson.godeye.core.internal.modules.startup.Startup;
 import cn.hikyson.godeye.core.internal.modules.startup.StartupInfo;
 import cn.hikyson.godeye.monitor.GodEyeMonitor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends Activity {
 
     private static final int PORT = 5390;
+
+    private OkHttpClient mOkHttpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +38,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GodEyeMonitor.work(this);
+        OkNetworkCollectorFactory factory = new OkNetworkCollectorFactory(GodEye.instance().<Network>getModule(GodEye.ModuleName.NETWORK));
+        mOkHttpClient = new OkHttpClient.Builder().eventListenerFactory(factory).addNetworkInterceptor(factory.createInterceptor()).build();
         ((TextView) this.findViewById(R.id.address_tv)).setText(getAddressLog(this, PORT));
-
         getWindow().getDecorView().post(new Runnable() {
             @Override
             public void run() {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Startup startup = GodEye.instance().getModule(GodEye.ModuleName.STARTUP);
-                        startup.produce(new StartupInfo(MyApp.sApplicationStartTime > 0 ?
+                        GodEye.instance().<Startup>getModule(GodEye.ModuleName.STARTUP).produce(new StartupInfo(MyApp.sApplicationStartTime > 0 ?
                                 StartupInfo.StartUpType.COLD : StartupInfo.StartUpType.HOT, MyApp.sApplicationStartTime > 0 ? (System.currentTimeMillis() - MyApp.sApplicationStartTime) : (System.currentTimeMillis() - homeCreateTime)));
                         MyApp.sApplicationStartTime = 0;
                     }
@@ -65,28 +66,23 @@ public class MainActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    long startTimeMillis = System.currentTimeMillis();
-                    URL url = new URL("https://www.trip.com/");
-                    //打开连接
-                    HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-                    if (200 == urlConnection.getResponseCode()) {
-                        //得到输入流
-                        InputStream is = urlConnection.getInputStream();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int len = 0;
-                        while (-1 != (len = is.read(buffer))) {
-                            baos.write(buffer, 0, len);
-                            baos.flush();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            OkHttpClient client = mOkHttpClient;
+                            Request request = new Request.Builder()
+                                    .url("https://tech.hikyson.cn/")
+                                    .build();
+                            Response response = client.newCall(request).execute();
+                            String body = response.body().string();
+                            Log.d("androidgodeye", "request result:" + response.code());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d("androidgodeye", "request result:" + String.valueOf(e));
                         }
-                        String result = baos.toString("utf-8");
-                        long endTimeMillis = System.currentTimeMillis();
-                        GodEye.instance().<Network>getModule(GodEye.ModuleName.NETWORK).produce(new RequestBaseInfo(startTimeMillis, endTimeMillis, result.getBytes().length, String.valueOf(url)));
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                }).start();
             }
         }).start();
     }
@@ -111,7 +107,9 @@ public class MainActivity extends Activity {
     }
 
     private static String getAddressLog(Context context, int port) {
-        return "Open AndroidGodEye dashboard [ " + getFormatIpAddress(context, port) + " ] in your browser , if can not open it , make sure device and pc are on the same network segment";
+        String condition = "Install Android Studio plugin [https://plugins.jetbrains.com/plugin/12114-androidgodeye] and connect android device to pc OR make sure android device and pc are in the same network segment";
+        String openAddress = "AndroidGodEye dashboard is available in [http://localhost:" + port + "/index.html] or [" + getFormatIpAddress(context, port) + "].";
+        return condition + "\n\n" + openAddress;
     }
 
     private static String getFormatIpAddress(Context context, int port) {
@@ -128,7 +126,7 @@ public class MainActivity extends Activity {
 
     public void viewHere(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://localhost:5390/index.html"));
+        intent.setData(Uri.parse("http://localhost:" + PORT + "/index.html"));
         startActivity(intent);
     }
 }

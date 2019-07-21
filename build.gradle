@@ -8,14 +8,13 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath "cn.hikyson.methodcanary:plugin:0.11.2"
     }
 }
 
 allprojects {
     repositories {
-        maven { url 'https://dl.bintray.com/kyson/maven' }
-//        maven { url 'https://jitpack.io' }
         jcenter()
         mavenCentral()
         google()
