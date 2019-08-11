@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -89,16 +90,19 @@ public class MainActivity extends Activity {
 
     public void block(View view) {
         EditText editText = findViewById(R.id.block_et);
-        final long blockTime = Long.parseLong(String.valueOf(editText.getText()));
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        try {
+            final long blockTime = Long.parseLong(String.valueOf(editText.getText()));
+            runOnUiThread(() -> {
                 try {
                     Thread.sleep(blockTime);
                 } catch (Throwable e) {
                 }
-            }
-        });
+            });
+        } catch (Throwable e) {
+            runOnUiThread(() -> {
+                Toast.makeText(MainActivity.this, "Input valid time for jank(block)!", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     public void jumpToLeak(View view) {
