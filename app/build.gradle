@@ -1,23 +1,37 @@
 apply plugin: 'com.android.application'
 
+String[] version_part = String.valueOf(VERSION_NAME).split('\\.')
+
+int VERSION_CODE = Integer.valueOf(version_part[0]) * 1000000 + Integer.valueOf(version_part[1]) * 1000 + Integer.valueOf(version_part[2])
+
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/kysonchao/AndroidStudioProjects/AndroidGodEyeDemo2/AndroidGodEye.keystore')
+            storePassword 'androidgodeye'
+            keyAlias = 'androidgodeye'
+            keyPassword 'androidgodeye'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "cn.hikyson.godeyedemo"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 8
-        versionName "8.0"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
@@ -29,12 +43,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'cn.hikyson.godeye:godeye-core:2.6.8'
-    implementation 'cn.hikyson.godeye:godeye-toolbox:2.6.8'
+    implementation "cn.hikyson.godeye:godeye-core:${VERSION_NAME}"
+    implementation "cn.hikyson.godeye:godeye-toolbox:${VERSION_NAME}"
     // Demo为了演示，线上环境请请使用releaseImplementation godeye-monitor-no-op方式(会影响线上包的大小和性能)
-    implementation 'cn.hikyson.godeye:godeye-monitor:2.6.8'
-    // debugImplementation 'cn.hikyson.godeye:godeye-monitor:2.6.8'
-    // releaseImplementation 'cn.hikyson.godeye:godeye-monitor-no-op:2.6.8'
+    implementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
+//     debugImplementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
+//     releaseImplementation "cn.hikyson.godeye:godeye-monitor-no-op:${VERSION_NAME}"
 }
 
 apply plugin: 'cn.hikyson.methodcanary.plugin'

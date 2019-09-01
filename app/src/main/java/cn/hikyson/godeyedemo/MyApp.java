@@ -6,12 +6,14 @@ import android.app.Application;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import cn.hikyson.godeye.core.GodEye;
 import cn.hikyson.godeye.core.GodEyeConfig;
 import cn.hikyson.godeye.monitor.GodEyeMonitor;
-import cn.hikyson.godeye.monitor.modulemodel.AppInfoLabel;
+import cn.hikyson.godeye.monitor.modules.AppInfoLabel;
 
 /**
  * Created by kysonchao on 2018/1/29.
@@ -40,6 +42,7 @@ public class MyApp extends Application {
                 return appInfoLabels;
             }
         });
+        GodEyeMonitor.setClassPrefixOfAppProcess(Collections.singletonList("cn.hikyson.godeyedemo"));
         if (isMainProcess(this)) {
             GodEye.instance().install(GodEyeConfig.fromAssets("android-godeye-config/install.config"));
         }
