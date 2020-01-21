@@ -7,7 +7,7 @@ int VERSION_CODE = Integer.valueOf(version_part[0]) * 1000000 + Integer.valueOf(
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/kysonchao/AndroidStudioProjects/AndroidGodEyeDemo2/AndroidGodEye.keystore')
+            storeFile file('../AndroidGodEye.keystore')
             storePassword 'androidgodeye'
             keyAlias = 'androidgodeye'
             keyPassword 'androidgodeye'
@@ -20,7 +20,7 @@ android {
         targetSdkVersion 28
         versionCode VERSION_CODE
         versionName VERSION_NAME
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -42,13 +42,18 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    // Core module
     implementation "cn.hikyson.godeye:godeye-core:${VERSION_NAME}"
-    implementation "cn.hikyson.godeye:godeye-toolbox:${VERSION_NAME}"
-    // Demo为了演示，线上环境请请使用releaseImplementation godeye-monitor-no-op方式(会影响线上包的大小和性能)
+//    // Debug dashboard
+//    debugImplementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
+//    // Release no dashboard
+//    releaseImplementation "cn.hikyson.godeye:godeye-monitor-no-op:${VERSION_NAME}"
     implementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
-//     debugImplementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
-//     releaseImplementation "cn.hikyson.godeye:godeye-monitor-no-op:${VERSION_NAME}"
+    // Extra module, help to monitor network
+    implementation "cn.hikyson.godeye:godeye-okhttp:${VERSION_NAME}"
+    // Extra module, help to monitor crash/ANR
+    implementation "cn.hikyson.godeye:godeye-xcrash:${VERSION_NAME}"
 }
 
 apply plugin: 'cn.hikyson.methodcanary.plugin'

@@ -9,16 +9,17 @@
     tools:context="cn.hikyson.godeyedemo.MainActivity">
 
     <TextView
-        android:id="@+id/address_tv"
+        android:id="@+id/note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textIsSelectable="true"
         android:layout_gravity="bottom"/>
 
     <EditText
         android:id="@+id/block_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:hint="block time millis"/>
 
     <Button
@@ -32,7 +33,7 @@
         android:id="@+id/request_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:onClick="request"
         android:text="request"/>
 
@@ -41,15 +42,15 @@
         android:id="@+id/leak_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:onClick="jumpToLeak"
         android:text="jumpToLeak"/>
 
     <Button
-        android:id="@+id/webview_btn"
+        android:id="@+id/crash_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:onClick="viewHere"
-        android:text="View on mobile browser"/>
+        android:layout_marginTop="6dp"
+        android:onClick="makeCrash"
+        android:text="Make a crash!!!"/>
 </LinearLayout>

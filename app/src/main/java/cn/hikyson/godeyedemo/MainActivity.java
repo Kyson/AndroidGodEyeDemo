@@ -1,11 +1,8 @@
 package cn.hikyson.godeyedemo;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,40 +13,35 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-
-import cn.hikyson.android.godeye.toolbox.network.OkNetworkCollectorFactory;
-import cn.hikyson.godeye.core.GodEye;
-import cn.hikyson.godeye.core.internal.modules.network.Network;
-import cn.hikyson.godeye.core.internal.modules.startup.Startup;
+import cn.hikyson.godeye.core.GodEyeHelper;
+import cn.hikyson.godeye.core.exceptions.UninstallException;
 import cn.hikyson.godeye.core.internal.modules.startup.StartupInfo;
 import cn.hikyson.godeye.monitor.GodEyeMonitor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import xcrash.XCrash;
 
 public class MainActivity extends Activity {
-
-    private static final int PORT = 5390;
-
-    private OkHttpClient mOkHttpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final long homeCreateTime = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GodEyeMonitor.work(this);
-        OkNetworkCollectorFactory factory = new OkNetworkCollectorFactory(GodEye.instance().<Network>getModule(GodEye.ModuleName.NETWORK));
-        mOkHttpClient = new OkHttpClient.Builder().eventListenerFactory(factory).addNetworkInterceptor(factory.createInterceptor()).build();
-        ((TextView) this.findViewById(R.id.address_tv)).setText(getAddressLog(this, PORT));
+        ((TextView) this.findViewById(R.id.note)).setText(getNote());
         getWindow().getDecorView().post(new Runnable() {
             @Override
             public void run() {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        GodEye.instance().<Startup>getModule(GodEye.ModuleName.STARTUP).produce(new StartupInfo(MyApp.sApplicationStartTime > 0 ?
-                                StartupInfo.StartUpType.COLD : StartupInfo.StartUpType.HOT, MyApp.sApplicationStartTime > 0 ? (System.currentTimeMillis() - MyApp.sApplicationStartTime) : (System.currentTimeMillis() - homeCreateTime)));
+                        try {
+                            GodEyeHelper.onAppStartEnd(new StartupInfo(MyApp.sApplicationStartTime > 0 ?
+                                    StartupInfo.StartUpType.COLD : StartupInfo.StartUpType.HOT, MyApp.sApplicationStartTime > 0 ? (System.currentTimeMillis() - MyApp.sApplicationStartTime) : (System.currentTimeMillis() - homeCreateTime)));
+                        } catch (UninstallException e) {
+                            e.printStackTrace();
+                        }
                         MyApp.sApplicationStartTime = 0;
                     }
                 });
@@ -71,7 +63,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            OkHttpClient client = mOkHttpClient;
+                            OkHttpClient client = MyApp.getOkHttpClientInstance();
                             Request request = new Request.Builder()
                                     .url("https://tech.hikyson.cn/")
                                     .build();
@@ -110,27 +102,20 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    private static String getAddressLog(Context context, int port) {
-        String condition = "Install Android Studio plugin [https://plugins.jetbrains.com/plugin/12114-androidgodeye] and connect android device to pc OR make sure android device and pc are in the same network segment";
-        String openAddress = "AndroidGodEye dashboard is available in [http://localhost:" + port + "/index.html] or [" + getFormatIpAddress(context, port) + "].";
-        return condition + "\n\n" + openAddress;
+    private static String getNote() {
+        String openAddress = "AndroidGodEye dashboard is available on [http://localhost:5390/index.html], use plugin to open it.";
+        String condition = "Install Android Studio plugin [https://plugins.jetbrains.com/plugin/12114-androidgodeye] to view details.";
+        String logcat = "You can find the address in logcat by search 'AndroidGodEye monitor is running at port'.";
+        return openAddress + "\n\n" + condition + "\n\n" + logcat;
     }
 
-    private static String getFormatIpAddress(Context context, int port) {
-        @SuppressLint("WifiManagerPotentialLeak")
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        int ipAddress = wifiManager != null ? wifiManager.getConnectionInfo().getIpAddress() : 0;
-        @SuppressLint("DefaultLocale") final String formattedIpAddress = String.format("%d.%d.%d.%d",
-                (ipAddress & 0xff),
-                (ipAddress >> 8 & 0xff),
-                (ipAddress >> 16 & 0xff),
-                (ipAddress >> 24 & 0xff));
-        return "http://" + formattedIpAddress + ":" + port + "/index.html";
-    }
-
-    public void viewHere(View view) {
+    private void openBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("http://localhost:" + PORT + "/index.html"));
+        intent.setData(Uri.parse(url));
         startActivity(intent);
+    }
+
+    public void makeCrash(View view) {
+        XCrash.testJavaCrash(true);
     }
 }
