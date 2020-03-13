@@ -40,7 +40,6 @@ public class MyApp extends Application {
                     return appInfoLabels;
                 }
             });
-            GodEyeMonitor.setClassPrefixOfAppProcess(Collections.singletonList("cn.hikyson.godeyedemo"));
             GodEyeMonitor.work(this);
         }
         sApplicationStartTime = System.currentTimeMillis();

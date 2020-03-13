@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
 
     private static String getNote() {
         String openAddress = "AndroidGodEye dashboard is available on [http://localhost:5390/index.html], use plugin to open it.";
-        String condition = "Install Android Studio plugin [https://plugins.jetbrains.com/plugin/12114-androidgodeye] to view details.";
+        String condition = "Install Android Studio plugin(Named 'AndroidGodEye') [https://plugins.jetbrains.com/plugin/12114-androidgodeye] to view details.";
         String logcat = "You can find the address in logcat by search 'AndroidGodEye monitor is running at port'.";
         return openAddress + "\n\n" + condition + "\n\n" + logcat;
     }
