@@ -3,21 +3,39 @@
 buildscript {
 
     repositories {
-        jcenter()
-        mavenCentral()
-        google()
+        if (Boolean.parseBoolean(USE_ALIYUN_REPO)) {
+            // Replacement of google()
+            maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+            // Replacement of mavenCentral()
+            maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+            // Replacement of jcenter()
+            maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        } else {
+            google()
+            jcenter()
+            mavenCentral()
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath "cn.hikyson.methodcanary:plugin:0.11.2"
+        classpath "cn.hikyson.methodcanary:plugin:${METHOD_CANARY_VERSION_NAME}"
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
-        mavenCentral()
-        google()
+        if (Boolean.parseBoolean(USE_ALIYUN_REPO)) {
+            // Replacement of google()
+            maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+            // Replacement of mavenCentral()
+            maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+            // Replacement of jcenter()
+            maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        } else {
+            google()
+            jcenter()
+            mavenCentral()
+        }
     }
 }
 
