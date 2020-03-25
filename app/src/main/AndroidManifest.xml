@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="cn.hikyson.godeyedemo">
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    package="cn.hikyson.godeyedemo">
 
     <application
         android:name=".MyApp"
@@ -12,13 +11,27 @@
         android:supportsRtl="true">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LeakActivity">
-        </activity>
+
+        <activity android:name=".LeakActivity"></activity>
+
+        <service
+            android:name=".MyIntentService"
+            android:exported="false"
+            android:process=":test"></service>
+
+        <service
+            android:name="cn.hikyson.godeye.core.internal.notification.LocalNotificationListenerService"
+            android:enabled="true"
+            android:exported="false"
+            android:process="cn.hikyson.godeyedemo"
+            tools:replace="android:process" />
     </application>
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
 </manifest>

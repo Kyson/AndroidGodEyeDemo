@@ -16,6 +16,8 @@ import cn.hikyson.godeye.monitor.GodEyeMonitor;
 import cn.hikyson.godeye.monitor.modules.appinfo.AppInfoLabel;
 import okhttp3.OkHttpClient;
 
+import static cn.hikyson.godeye.core.utils.ProcessUtils.isMainProcess;
+
 /**
  * Created by kysonchao on 2018/1/29.
  */
@@ -26,7 +28,6 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         if (isMainProcess(this)) {
-            GodEye.instance().init(this);
             GodEye.instance().install(GodEyeConfig.fromAssets("android-godeye-config/install.config"));
             GodEyeMonitor.injectAppInfoConext(new GodEyeMonitor.AppInfoConext() {
                 @Override
@@ -43,6 +44,7 @@ public class MyApp extends Application {
             GodEyeMonitor.work(this);
         }
         sApplicationStartTime = System.currentTimeMillis();
+        MyIntentService.startActionBaz(this, "", "");
     }
 
     private static OkHttpClient sOkHttpClient;

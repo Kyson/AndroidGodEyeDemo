@@ -50,13 +50,14 @@ dependencies {
     implementation "cn.hikyson.godeye:godeye-okhttp:${VERSION_NAME}"
     // Extra module, help to monitor crash/ANR
     implementation "cn.hikyson.godeye:godeye-xcrash:${VERSION_NAME}"
+    implementation "cn.hikyson.godeye:godeye-leakcanary:${VERSION_NAME}"
 }
 
 apply plugin: 'cn.hikyson.methodcanary.plugin'
 
 AndroidGodEye {
-    enableMethodTracer = true
-    enableLifecycleTracer = true
-    instrumentationRuleFilePath = 'AndroidGodEye-MethodCanary.js'
-    instrumentationRuleIncludeClassNamePrefix = null
+    enableMethodTracer true
+    enableLifecycleTracer true
+    instrumentationRuleFilePath 'AndroidGodEye-MethodCanary.js'
+    instrumentationRuleIncludeClassNamePrefix(['cn/hikyson/godeyedemo'])
 }
