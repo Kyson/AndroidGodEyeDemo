@@ -43,13 +43,12 @@ dependencies {
     implementation "cn.hikyson.godeye:godeye-core:${VERSION_NAME}"
 //    // Debug dashboard
 //    debugImplementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
-//    // Release no dashboard
-//    releaseImplementation "cn.hikyson.godeye:godeye-monitor-no-op:${VERSION_NAME}"
     implementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
     // Extra module, help to monitor network
     implementation "cn.hikyson.godeye:godeye-okhttp:${VERSION_NAME}"
     // Extra module, help to monitor crash/ANR
     implementation "cn.hikyson.godeye:godeye-xcrash:${VERSION_NAME}"
+    // Extra module, help to monitor leak memory
     implementation "cn.hikyson.godeye:godeye-leakcanary:${VERSION_NAME}"
 }
 
