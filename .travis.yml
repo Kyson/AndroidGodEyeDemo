@@ -28,7 +28,8 @@ install:
     - sdkmanager --list || true
 
 script:
-    - ./gradlew assembleRelease
+    - ./gradlew clean && ./gradlew assembleRelease && ./gradlew copyForRelease
+    - ./gradlew clean && ./gradlew assembleDebug && ./gradlew copyForDebug
 
 notifications:
     email:
@@ -37,7 +38,9 @@ notifications:
 deploy:
     - provider: releases
       api_key: $GITHUB_TOKEN
-      file: "./app/build/outputs/apk/release/app-release.apk"
+      file:
+        - "./github_release/app-release.apk"
+        - "./github_release/app-debug.apk"
       skip_cleanup: true
       on:
         tags: true

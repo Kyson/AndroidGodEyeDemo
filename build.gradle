@@ -61,3 +61,13 @@ ext {
 }
 
 println "[VERSION] Version name is [" + rootProject.ext.REAL_VERSION_NAME + "] and parsed version code is [" + rootProject.ext.REAL_VERSION_CODE + "]."
+
+task copyForRelease(type: Copy) {
+    from './app/build/outputs/apk/release/app-release.apk'
+    into "./github_release"
+}
+
+task copyForDebug(type: Copy) {
+    from './app/build/outputs/apk/debug/app-debug.apk'
+    into "./github_release"
+}
