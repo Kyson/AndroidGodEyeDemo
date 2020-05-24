@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,13 +22,11 @@ import cn.hikyson.godeye.core.internal.modules.crash.CrashInfo;
 import cn.hikyson.godeye.core.internal.modules.network.NetworkInfo;
 import cn.hikyson.godeye.core.internal.modules.sm.BlockInfo;
 import cn.hikyson.godeye.core.internal.modules.startup.StartupInfo;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import xcrash.XCrash;
 
 public class MainActivity extends Activity {
     CompositeDisposable mCompositeDisposable;
@@ -125,7 +124,7 @@ public class MainActivity extends Activity {
     }
 
     public void makeCrash(View view) {
-        XCrash.testJavaCrash(true);
+        int i = 1 / 0;
     }
 
     private void observeWhenRelease() {
@@ -135,7 +134,7 @@ public class MainActivity extends Activity {
                 mCompositeDisposable.add(GodEye.instance().observeModule(GodEye.ModuleName.NETWORK, new Consumer<NetworkInfo>() {
                     @Override
                     public void accept(NetworkInfo networkInfo) throws Exception {
-                        AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(MainActivity.this, "This is NetworkInfo message from release:" + networkInfo.summary, Toast.LENGTH_LONG).show();
@@ -150,7 +149,7 @@ public class MainActivity extends Activity {
                 mCompositeDisposable.add(GodEye.instance().observeModule(GodEye.ModuleName.SM, new Consumer<BlockInfo>() {
                     @Override
                     public void accept(BlockInfo blockInfo) throws Exception {
-                        AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(MainActivity.this, "This is BlockInfo message from release:" + blockInfo.toString(), Toast.LENGTH_LONG).show();
@@ -165,7 +164,7 @@ public class MainActivity extends Activity {
                 mCompositeDisposable.add(GodEye.instance().observeModule(GodEye.ModuleName.CRASH, new Consumer<List<CrashInfo>>() {
                     @Override
                     public void accept(List<CrashInfo> crashInfos) throws Exception {
-                        AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(MainActivity.this, "This is CrashInfo message from release:" + crashInfos.toString(), Toast.LENGTH_LONG).show();

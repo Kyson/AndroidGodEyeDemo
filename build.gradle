@@ -17,7 +17,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "cn.hikyson.methodcanary:plugin:${METHOD_CANARY_VERSION_NAME}"
     }
 }

@@ -60,6 +60,8 @@ dependencies {
     implementation "cn.hikyson.godeye:godeye-xcrash:${VERSION_NAME}"
     // Extra module, help to monitor leak memory
     debugImplementation "cn.hikyson.godeye:godeye-leakcanary:${VERSION_NAME}"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.19"
+    implementation "com.squareup.okhttp3:okhttp:4.6.0"
 }
 
 apply plugin: 'cn.hikyson.methodcanary.plugin'
