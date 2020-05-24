@@ -14,8 +14,8 @@ android {
         applicationId "cn.hikyson.godeyedemo"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode rootProject.ext.REAL_VERSION_CODE
-        versionName rootProject.ext.REAL_VERSION_NAME
+        versionCode 312
+        versionName "3.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -28,10 +28,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            resValue("bool", "android_god_eye_manual_install", "false")
-            resValue("bool", "android_god_eye_need_notification", "false")
-            resValue("integer", "android_god_eye_monitor_port", "5390")
-            resValue("string", "android_god_eye_install_assets_path", "android-godeye-config/install.config")
         }
         debug {
             applicationIdSuffix ".debug"
@@ -39,36 +35,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            resValue("bool", "android_god_eye_manual_install", "false")
-            resValue("bool", "android_god_eye_need_notification", "true")
-            resValue("integer", "android_god_eye_monitor_port", "5390")
-            resValue("string", "android_god_eye_install_assets_path", "android-godeye-config/install.config")
         }
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    // Core module
-    implementation "cn.hikyson.godeye:godeye-core:${VERSION_NAME}"
-    // Debug dashboard
-    debugImplementation "cn.hikyson.godeye:godeye-monitor:${VERSION_NAME}"
-    // Extra module, help to monitor network
-    implementation "cn.hikyson.godeye:godeye-okhttp:${VERSION_NAME}"
-    // Extra module, help to monitor crash/ANR
-    implementation "cn.hikyson.godeye:godeye-xcrash:${VERSION_NAME}"
-    // Extra module, help to monitor leak memory
-    debugImplementation "cn.hikyson.godeye:godeye-leakcanary:${VERSION_NAME}"
+    implementation 'cn.hikyson.godeye:godeye-core:3.1.2'
+    debugImplementation 'cn.hikyson.godeye:godeye-monitor:3.1.2'
+    releaseImplementation 'cn.hikyson.godeye:godeye-monitor-no-op:3.1.2'
+    implementation 'cn.hikyson.godeye:godeye-toolbox:3.1.2'
     implementation "io.reactivex.rxjava2:rxjava:2.2.19"
     implementation "com.squareup.okhttp3:okhttp:4.6.0"
 }
 
 apply plugin: 'cn.hikyson.methodcanary.plugin'
-
-AndroidGodEye {
-    enableMethodTracer !gradle.startParameter.taskNames.contains("assembleRelease")
-    enableLifecycleTracer true
-    instrumentationRuleFilePath 'AndroidGodEye-MethodCanary.js'
-    instrumentationRuleIncludeClassNamePrefix(['cn/hikyson/godeyedemo'])
-}

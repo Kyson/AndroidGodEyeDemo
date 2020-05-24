@@ -5,14 +5,11 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.hikyson.android.godeye.okhttp.GodEyePluginOkNetwork;
-import cn.hikyson.godeye.core.GodEyeHelper;
-import cn.hikyson.godeye.core.monitor.AppInfoConext;
-import cn.hikyson.godeye.core.monitor.AppInfoLabel;
+import cn.hikyson.android.godeye.toolbox.network.GodEyePluginOkNetwork;
+import cn.hikyson.godeye.core.GodEye;
+import cn.hikyson.godeye.core.GodEyeConfig;
+import cn.hikyson.godeye.core.utils.ProcessUtils;
+import cn.hikyson.godeye.monitor.GodEyeMonitor;
 import okhttp3.OkHttpClient;
 
 /**
@@ -24,18 +21,12 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        GodEyeHelper.setMonitorAppInfoConext(new AppInfoConext() {
-            @Override
-            public List<cn.hikyson.godeye.core.monitor.AppInfoLabel> getAppInfo() {
-                List<AppInfoLabel> appInfoLabels = new ArrayList<>();
-                appInfoLabels.add(new AppInfoLabel("ApplicationID", BuildConfig.APPLICATION_ID, null));
-                appInfoLabels.add(new AppInfoLabel("VersionName", BuildConfig.VERSION_NAME, ""));
-                appInfoLabels.add(new AppInfoLabel("VersionCode", String.valueOf(BuildConfig.VERSION_CODE), ""));
-                appInfoLabels.add(new AppInfoLabel("BuildType", BuildConfig.BUILD_TYPE, ""));
-                appInfoLabels.add(new AppInfoLabel("AndroidGodEye", "https://github.com/Kyson/AndroidGodEye", "https://github.com/Kyson/AndroidGodEye"));
-                return appInfoLabels;
-            }
-        });
+        GodEye.instance().init(this);
+        if (ProcessUtils.isMainProcess(this)) {//install in main process
+            GodEye.instance().install(GodEyeConfig.fromAssets("android-godeye-config/install.config"));
+        }
+        GodEyeMonitor.work(this);
+
         sApplicationStartTime = System.currentTimeMillis();
         MyIntentService.startActionBaz(this, "", "");
     }

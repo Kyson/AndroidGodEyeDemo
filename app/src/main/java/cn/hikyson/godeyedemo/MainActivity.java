@@ -2,7 +2,6 @@ package cn.hikyson.godeyedemo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,12 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.List;
 
 import cn.hikyson.godeye.core.GodEye;
 import cn.hikyson.godeye.core.GodEyeHelper;
 import cn.hikyson.godeye.core.exceptions.UninstallException;
-import cn.hikyson.godeye.core.internal.modules.crash.CrashInfo;
 import cn.hikyson.godeye.core.internal.modules.network.NetworkInfo;
 import cn.hikyson.godeye.core.internal.modules.sm.BlockInfo;
 import cn.hikyson.godeye.core.internal.modules.startup.StartupInfo;
@@ -153,21 +150,6 @@ public class MainActivity extends Activity {
                             @Override
                             public void run() {
                                 Toast.makeText(MainActivity.this, "This is BlockInfo message from release:" + blockInfo.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                }));
-            } catch (UninstallException e) {
-                e.printStackTrace();
-            }
-            try {
-                mCompositeDisposable.add(GodEye.instance().observeModule(GodEye.ModuleName.CRASH, new Consumer<List<CrashInfo>>() {
-                    @Override
-                    public void accept(List<CrashInfo> crashInfos) throws Exception {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this, "This is CrashInfo message from release:" + crashInfos.toString(), Toast.LENGTH_LONG).show();
                             }
                         });
                     }
